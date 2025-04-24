@@ -1,0 +1,67 @@
+﻿@page
+@model Timetable.Base.Pages.raspisModel
+@{
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Расписание занятий</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f8fa;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+            max-width: 600px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #d00;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Расписание занятий</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>День недели</th>
+                <th>Время</th>
+                <th>Предмет</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Понедельник</td><td>09:00 - 10:30</td><td>Математика</td></tr>
+            <tr><td>Вторник</td><td>10:45 - 12:15</td><td>Физика</td></tr>
+            <tr><td>Среда</td><td>13:00 - 14:30</td><td>Информатика</td></tr>
+            <tr><td>Четверг</td><td>09:00 - 10:30</td><td>Английский язык</td></tr>
+            <tr><td>Пятница</td><td>11:00 - 12:30</td><td>Химия</td></tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
