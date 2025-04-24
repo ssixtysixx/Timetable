@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetable.Base", "Timetable.Base\Timetable.Base.csproj", "{B1FDE66B-92E4-46E5-A854-24AEE59DF14C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{5E1E2703-85A6-478D-B073-47AEA923D7D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "timetable.storage.framework", "timetable.storage.framework\timetable.storage.framework.csproj", "{7FBAF250-A3D1-48E2-864E-72B9E8D3D01A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{B1FDE66B-92E4-46E5-A854-24AEE59DF14C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1FDE66B-92E4-46E5-A854-24AEE59DF14C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1FDE66B-92E4-46E5-A854-24AEE59DF14C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FBAF250-A3D1-48E2-864E-72B9E8D3D01A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FBAF250-A3D1-48E2-864E-72B9E8D3D01A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FBAF250-A3D1-48E2-864E-72B9E8D3D01A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FBAF250-A3D1-48E2-864E-72B9E8D3D01A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7FBAF250-A3D1-48E2-864E-72B9E8D3D01A} = {5E1E2703-85A6-478D-B073-47AEA923D7D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F478F5E0-B5EA-45AF-80EA-BCF1290AF612}
