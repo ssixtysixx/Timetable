@@ -121,6 +121,29 @@
             background: #fff;
             border-color: #d00;
         }
+
+        .delete-row-btn {
+            background: #b00;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+            .delete-row-btn:hover {
+                background: #900;
+            }
+
+        .edit-mode .delete-row-btn {
+            display: inline-block;
+        }
+
+        .delete-row-btn {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -131,7 +154,6 @@
     </div>
 
     <h1>Расписание занятий</h1>
-
     <div class="filters">
         <div>
             <label for="dayFilter">День недели:</label>
@@ -164,6 +186,7 @@
                 <th>Группа</th>
                 <th>Кабинет</th>
                 <th>Примечание</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody id="scheduleBody">
@@ -190,6 +213,7 @@
                     <input class="editable-field" value="101">
                 </td>
                 <td><textarea class="note-input" placeholder="Введите примечание"></textarea></td>
+                <td><button class="delete-row-btn">Удалить</button></td>
             </tr>
             <!-- Остальные строки по аналогии -->
         </tbody>
@@ -255,8 +279,15 @@
                     <input class="editable-field" value="100">
                 </td>
                 <td><textarea class="note-input" placeholder="Введите примечание"></textarea></td>
+                <td><button class="delete-row-btn">Удалить</button></td>
             `;
             tableBody.appendChild(newRow);
+
+             // Назначаем обработчик для новой кнопки "Удалить"
+            const deleteButton = newRow.querySelector('.delete-row-btn');
+            deleteButton.addEventListener('click', function () {
+                newRow.remove();
+            });
         });
 
         // Сохранение
@@ -273,17 +304,20 @@
 
             filterSchedule();
 
-            const scheduleData = [];
+           const scheduleData = [];
             document.querySelectorAll('#scheduleBody tr').forEach(row => {
-                const rowData = {
-                    day: row.cells[0].querySelector('input').value,
-                    time: row.cells[1].querySelector('input').value,
-                    subject: row.cells[2].querySelector('input').value,
-                    group: row.cells[3].querySelector('input').value,
-                    room: row.cells[4].querySelector('input').value,
-                    note: row.cells[5].querySelector('textarea').value
-                };
-                scheduleData.push(rowData);
+                // Проверяем, не является ли строка удаленной (display: none)
+                if (row.style.display !== 'none') {
+                    const rowData = {
+                        day: row.cells[0].querySelector('input').value,
+                        time: row.cells[1].querySelector('input').value,
+                        subject: row.cells[2].querySelector('input').value,
+                        group: row.cells[3].querySelector('input').value,
+                        room: row.cells[4].querySelector('input').value,
+                        note: row.cells[5].querySelector('textarea').value
+                    };
+                    scheduleData.push(rowData);
+                }
             });
 
             localStorage.setItem('schedule', JSON.stringify(scheduleData));
@@ -319,12 +353,27 @@
                             <input class="editable-field" value="${item.room}">
                         </td>
                         <td><textarea class="note-input">${item.note}</textarea></td>
+                         <td><button class="delete-row-btn">Удалить</button></td>
                     `;
                     tableBody.appendChild(newRow);
+
+                    // Назначаем обработчик для новой кнопки "Удалить"
+                    const deleteButton = newRow.querySelector('.delete-row-btn');
+                    deleteButton.addEventListener('click', function () {
+                        newRow.remove();
+                    });
                 });
+            }
+        });
+
+        // Делегированный обработчик для удаления строк
+        tableBody.addEventListener('click', function (event) {
+            if (event.target.classList.contains('delete-row-btn')) {
+                event.target.closest('tr').remove();
             }
         });
     </script>
 </body>
 </html>
+
 
