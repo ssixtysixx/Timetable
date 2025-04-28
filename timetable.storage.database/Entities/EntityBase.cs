@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Timetable.Storage.Framework.Entities;
+namespace Timetable.Storage.Database.Entities;
 
 public abstract class EntityBase
 {
