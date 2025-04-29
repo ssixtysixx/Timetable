@@ -1,0 +1,156 @@
+﻿@{
+    ViewData["Title"] = "Авторизация";
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Меню авторизации</title>
+    <style>
+        body {
+            background: #f6f8fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            width: 320px;
+            margin: 100px auto;
+            padding: 30px 25px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .login-container h2 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #d00;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #d00;
+            }
+
+        .register-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #d00;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+            .register-link:hover {
+                text-decoration: underline;
+            }
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background: #fff;
+            margin: 100px auto;
+            padding: 30px 25px;
+            border-radius: 8px;
+            width: 320px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: #333;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Вход</h2>
+        <form action="/login" method="post">
+            <input type="text" name="username" placeholder="Имя пользователя" required />
+            <input type="password" name="password" placeholder="Пароль" required />
+            <button type="submit">Войти</button>
+        </form>
+        <!-- кнопка расписание -->
+        <form>
+            <a href="raspis" style="flex: 1; display: inline-block; text-align: center; padding: 10px 0; background: #d00; color: white; border-radius: 4px; text-decoration: none; font-size: 16px; cursor: pointer;">
+                Расписание
+            </a>
+        </form>
+        <!-- кнопка админ расписание -->
+        <form>
+            <a href="raspisadmin" style="flex: 1; display: inline-block; text-align: center; padding: 10px 0; background: #d00; color: white; border-radius: 4px; text-decoration: none; font-size: 16px; cursor: pointer;">
+                Админ
+            </a>
+        </form>
+        <a class="register-link" id="openRegister">Регистрация</a>
+    </div>
+
+    <!-- Модальное окно регистрации -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Регистрация</h2>
+            <form action="schedule.html" method="post">
+                <input type="text" name="new_username" placeholder="Имя пользователя" required />
+                <input type="password" name="new_password" placeholder="Пароль" required />
+                <input type="password" name="confirm_password" placeholder="Повторите пароль" required />
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Открыть модальное окно
+        document.getElementById('openRegister').onclick = function() {
+            document.getElementById('registerModal').style.display = 'block';
+        };
+        // Закрыть модальное окно
+        document.getElementById('closeModal').onclick = function() {
+            document.getElementById('registerModal').style.display = 'none';
+        };
+        // Закрыть по клику вне модального окна
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('registerModal')) {
+                document.getElementById('registerModal').style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

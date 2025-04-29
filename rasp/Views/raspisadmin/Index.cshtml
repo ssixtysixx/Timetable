@@ -1,0 +1,377 @@
+﻿@{
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Расписание занятий</title>
+    <style>
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background: #d00;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+            button:hover {
+                background: #b00;
+            }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f8fa;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .filters {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 95%;
+            max-width: 900px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+
+        th {
+            background: #d00;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        td:nth-child(6) {
+            width: 40%;
+            text-align: left;
+        }
+
+        textarea.note-input {
+            width: 100%;
+            min-height: 60px;
+            resize: vertical;
+            padding: 6px 8px;
+            font-size: 0.9rem;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .edit-mode td {
+            padding: 8px 10px;
+        }
+
+        .editable-field {
+            display: none;
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: inherit;
+            font-size: inherit;
+            text-align: center;
+        }
+
+        .edit-mode .static-text {
+            display: none;
+        }
+
+        .edit-mode .editable-field {
+            display: block;
+        }
+
+        .edit-mode textarea.note-input {
+            background: #fff;
+            border-color: #d00;
+        }
+
+        .delete-row-btn {
+            background: #b00;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+            .delete-row-btn:hover {
+                background: #900;
+            }
+
+        .edit-mode .delete-row-btn {
+            display: inline-block;
+        }
+
+        .delete-row-btn {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="editBtn">Редактировать</button>
+        <button id="addRowBtn" style="display:none;">Добавить строку</button>
+        <button id="saveBtn" style="display:none;">Сохранить</button>
+    </div>
+
+    <h1>Расписание занятий</h1>
+    <div class="filters">
+        <div>
+            <label for="dayFilter">День недели:</label>
+            <select id="dayFilter">
+                <option value="all">Все</option>
+                <option value="Понедельник">Понедельник</option>
+                <option value="Вторник">Вторник</option>
+                <option value="Среда">Среда</option>
+                <option value="Четверг">Четверг</option>
+                <option value="Пятница">Пятница</option>
+            </select>
+        </div>
+        <div>
+            <label for="groupFilter">Группа:</label>
+            <select id="groupFilter">
+                <option value="all">Все</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+            </select>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>День недели</th>
+                <th>Время</th>
+                <th>Предмет</th>
+                <th>Группа</th>
+                <th>Кабинет</th>
+                <th>Примечание</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody id="scheduleBody">
+            <!-- Пример строки -->
+            <tr>
+                <td>
+                    <span class="static-text">Понедельник</span>
+                    <input class="editable-field" value="Понедельник">
+                </td>
+                <td>
+                    <span class="static-text">09:00 - 10:30</span>
+                    <input class="editable-field" value="09:00 - 10:30">
+                </td>
+                <td>
+                    <span class="static-text">Математика</span>
+                    <input class="editable-field" value="Математика">
+                </td>
+                <td>
+                    <span class="static-text">A</span>
+                    <input class="editable-field" value="A">
+                </td>
+                <td>
+                    <span class="static-text">101</span>
+                    <input class="editable-field" value="101">
+                </td>
+                <td><textarea class="note-input" placeholder="Введите примечание"></textarea></td>
+                <td><button class="delete-row-btn">Удалить</button></td>
+            </tr>
+            <!-- Остальные строки по аналогии -->
+        </tbody>
+    </table>
+
+    <script>
+        // Фильтрация
+        const dayFilter = document.getElementById('dayFilter');
+        const groupFilter = document.getElementById('groupFilter');
+        const tableBody = document.getElementById('scheduleBody');
+        const editBtn = document.getElementById('editBtn');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const saveBtn = document.getElementById('saveBtn');
+
+        function filterSchedule() {
+            const dayValue = dayFilter.value;
+            const groupValue = groupFilter.value;
+
+            for (const row of tableBody.rows) {
+                const day = row.cells[0].querySelector('.static-text').textContent;
+                const group = row.cells[3].querySelector('.static-text').textContent;
+
+                const dayMatch = (dayValue === 'all' || day === dayValue);
+                const groupMatch = (groupValue === 'all' || group === groupValue);
+
+                row.style.display = (dayMatch && groupMatch) ? '' : 'none';
+            }
+        }
+
+        dayFilter.addEventListener('change', filterSchedule);
+        groupFilter.addEventListener('change', filterSchedule);
+
+        // Редактирование
+        editBtn.addEventListener('click', () => {
+            document.body.classList.add('edit-mode');
+            editBtn.style.display = 'none';
+            addRowBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'inline-block';
+        });
+
+        // Добавление новой строки
+        addRowBtn.addEventListener('click', () => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>
+                    <span class="static-text">Понедельник</span>
+                    <input class="editable-field" value="Понедельник">
+                </td>
+                <td>
+                    <span class="static-text">09:00 - 10:30</span>
+                    <input class="editable-field" value="09:00 - 10:30">
+                </td>
+                <td>
+                    <span class="static-text">Новый предмет</span>
+                    <input class="editable-field" value="Новый предмет">
+                </td>
+                <td>
+                    <span class="static-text">A</span>
+                    <input class="editable-field" value="A">
+                </td>
+                <td>
+                    <span class="static-text">100</span>
+                    <input class="editable-field" value="100">
+                </td>
+                <td><textarea class="note-input" placeholder="Введите примечание"></textarea></td>
+                <td><button class="delete-row-btn">Удалить</button></td>
+            `;
+            tableBody.appendChild(newRow);
+
+             // Назначаем обработчик для новой кнопки "Удалить"
+            const deleteButton = newRow.querySelector('.delete-row-btn');
+            deleteButton.addEventListener('click', function () {
+                newRow.remove();
+            });
+        });
+
+        // Сохранение
+        saveBtn.addEventListener('click', () => {
+            document.querySelectorAll('.editable-field').forEach(input => {
+                const staticText = input.previousElementSibling;
+                staticText.textContent = input.value;
+            });
+
+            document.body.classList.remove('edit-mode');
+            saveBtn.style.display = 'none';
+            addRowBtn.style.display = 'none';
+            editBtn.style.display = 'inline-block';
+
+            filterSchedule();
+
+           const scheduleData = [];
+            document.querySelectorAll('#scheduleBody tr').forEach(row => {
+                // Проверяем, не является ли строка удаленной (display: none)
+                if (row.style.display !== 'none') {
+                    const rowData = {
+                        day: row.cells[0].querySelector('input').value,
+                        time: row.cells[1].querySelector('input').value,
+                        subject: row.cells[2].querySelector('input').value,
+                        group: row.cells[3].querySelector('input').value,
+                        room: row.cells[4].querySelector('input').value,
+                        note: row.cells[5].querySelector('textarea').value
+                    };
+                    scheduleData.push(rowData);
+                }
+            });
+
+            localStorage.setItem('schedule', JSON.stringify(scheduleData));
+            alert('Изменения сохранены!');
+        });
+
+        // Восстановление данных
+        window.addEventListener('load', () => {
+            const savedData = JSON.parse(localStorage.getItem('schedule'));
+            if (savedData) {
+                tableBody.innerHTML = '';
+                savedData.forEach(item => {
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>
+                            <span class="static-text">${item.day}</span>
+                            <input class="editable-field" value="${item.day}">
+                        </td>
+                        <td>
+                            <span class="static-text">${item.time}</span>
+                            <input class="editable-field" value="${item.time}">
+                        </td>
+                        <td>
+                            <span class="static-text">${item.subject}</span>
+                            <input class="editable-field" value="${item.subject}">
+                        </td>
+                        <td>
+                            <span class="static-text">${item.group}</span>
+                            <input class="editable-field" value="${item.group}">
+                        </td>
+                        <td>
+                            <span class="static-text">${item.room}</span>
+                            <input class="editable-field" value="${item.room}">
+                        </td>
+                        <td><textarea class="note-input">${item.note}</textarea></td>
+                         <td><button class="delete-row-btn">Удалить</button></td>
+                    `;
+                    tableBody.appendChild(newRow);
+
+                    // Назначаем обработчик для новой кнопки "Удалить"
+                    const deleteButton = newRow.querySelector('.delete-row-btn');
+                    deleteButton.addEventListener('click', function () {
+                        newRow.remove();
+                    });
+                });
+            }
+        });
+
+        // Делегированный обработчик для удаления строк
+        tableBody.addEventListener('click', function (event) {
+            if (event.target.classList.contains('delete-row-btn')) {
+                event.target.closest('tr').remove();
+            }
+        });
+    </script>
+</body>
+</html>
+
+

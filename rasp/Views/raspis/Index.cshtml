@@ -1,0 +1,209 @@
+﻿@{
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Расписание занятий</title>
+    <style>
+        /* Ваши стили без изменений */
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f8fa;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .filters {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        select {
+            padding: 5px 10px;
+            font-size: 1rem;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 95%;
+            max-width: 900px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+
+        th {
+            background: #d00;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        th:nth-child(6), td:nth-child(6) {
+            width: 40%;
+            text-align: left;
+        }
+
+        textarea.note-input {
+            width: 100%;
+            min-height: 60px;
+            resize: vertical;
+            padding: 6px 8px;
+            font-size: 0.9rem;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+            textarea.note-input:focus {
+                border-color: #d00;
+                outline: none;
+                box-shadow: 0 0 5px rgba(208,0,0,0.5);
+            }
+    </style>
+</head>
+<body>
+    <h1>Расписание занятий</h1>
+
+    @{
+    ViewBag.Title = "Расписание занятий";
+}
+
+<style>
+    .schedule-listbox {
+        width: 100%;
+        height: 300px;
+        border: 1px solid #ccc;
+        font-family: Arial, sans-serif;
+    }
+    .schedule-item {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+    }
+    .schedule-item:hover {
+        background-color: #f5f5f5;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #d00;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>День недели</th>
+                <th>Время</th>
+                <th>Предмет</th>
+                <th>Преподаватель</th>
+                <th>Аудитория</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ViewBag.ScheduleItems as List<SelectListItem>)
+            {
+                <tr>
+                    <td>@item.Text.Split('|')[0].Trim()</td>
+                    <td>@item.Text.Split('|')[1].Trim()</td>
+                    <td>@item.Text.Split('|')[2].Trim()</td>
+                    <td>@item.Text.Split('|')[3].Trim()</td>
+                    <td>@item.Text.Split('|')[4].Trim()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+    <script>
+        const dayFilter = document.getElementById('dayFilter');
+        const groupFilter = document.getElementById('groupFilter');
+        const tableBody = document.getElementById('scheduleBody');
+
+        function filterSchedule() {
+            const dayValue = dayFilter.value;
+            const groupValue = groupFilter.value;
+
+            for (const row of tableBody.rows) {
+                const day = row.cells[0].textContent;
+                const group = row.cells[3].textContent;
+
+                const dayMatch = (dayValue === 'all' || day === dayValue);
+                const groupMatch = (groupValue === 'all' || group === groupValue);
+
+                row.style.display = (dayMatch && groupMatch) ? '' : 'none';
+            }
+        }
+
+        dayFilter.addEventListener('change', filterSchedule);
+        groupFilter.addEventListener('change', filterSchedule);
+
+        // Функция для генерации уникального ключа для каждой строки
+        function getNoteKey(row) {
+            const day = row.cells[0].textContent.trim();
+            const time = row.cells[1].textContent.trim();
+            const subject = row.cells[2].textContent.trim();
+            const group = row.cells[3].textContent.trim();
+            return `note_${day}_${time}_${subject}_${group}`;
+        }
+
+        // Загрузка сохранённых заметок из localStorage
+        function loadNotes() {
+            for (const row of tableBody.rows) {
+                const textarea = row.querySelector('textarea.note-input');
+                if (!textarea) continue;
+
+                const key = getNoteKey(row);
+                const savedNote = localStorage.getItem(key);
+                if (savedNote !== null) {
+                    textarea.value = savedNote;
+                }
+
+                // Добавляем обработчик для сохранения при изменении
+                textarea.addEventListener('input', () => {
+                    localStorage.setItem(key, textarea.value);
+                });
+            }
+        }
+
+        // Инициализация
+        loadNotes();
+        filterSchedule(); // применить фильтры при загрузке (если нужно)
+    </script>
+</body>
+</html>
