@@ -11,4 +11,6 @@ public sealed class DisciplineEntity : EntityBase
 	public required string DisciplineCode { get; set; }
 
 	public string DisciplineName { get; set; } = string.Empty;
+
+	public int AllTimeHours { get; set; }
 }
