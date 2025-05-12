@@ -2,7 +2,7 @@
 
 namespace Timetable.Framework;
 
-public interface IGroupRepository : IRepository<>
+public interface IGroupRepository
 {
 
 }
