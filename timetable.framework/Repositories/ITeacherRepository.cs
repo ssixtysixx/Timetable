@@ -9,3 +9,7 @@ public interface ITeacherMutationRepository : ITeacherRepository
 {
 
 }
+public class TeacherRepository : ITeacherMutationRepository
+{
+
+}

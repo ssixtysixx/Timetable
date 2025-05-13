@@ -11,3 +11,7 @@ public interface IGroupMutationRepository : IGroupRepository
 {
 
 }
+public class GroupRepository : IGroupMutationRepository
+{
+
+}

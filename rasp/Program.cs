@@ -1,7 +1,20 @@
+using Timetable.Framework;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IDisciplineRepository, DisciplineRepository>();
+
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+
+builder.Services.AddScoped<IPlaceRepository, PlaceRepository>();
+
+builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+
 
 var app = builder.Build();
 

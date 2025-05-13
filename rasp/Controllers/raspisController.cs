@@ -1,8 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
+using Timetable.Framework;
 
 public class RaspisController : Controller
 {
+    private readonly IDisciplineRepository _Disciplinerepository;
+    private readonly IGroupRepository _Grouprepository;
+    private readonly IPlaceRepository _Placerepository;
+    private readonly IRecordRepository _Recordrepository;
+    private readonly ITeacherRepository _Teacherrepository;
+    public RaspisController(IDisciplineRepository Disciplinerepository, IGroupRepository Grouprepository, IPlaceRepository Placerepository, IRecordRepository Recordrepository, ITeacherRepository Teacherrepository)
+    {
+        _Disciplinerepository = Disciplinerepository;
+        _Grouprepository = Grouprepository;
+        _Placerepository = Placerepository;
+        _Recordrepository = Recordrepository;
+        _Teacherrepository = Teacherrepository;
+    }
     public ActionResult Index()
     {
         // Создаем расписание
