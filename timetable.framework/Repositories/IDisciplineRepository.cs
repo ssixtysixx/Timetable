@@ -9,7 +9,3 @@ public interface IDisciplineMutationRepository : IDisciplineRepository
 {
     
 }
-public class DisciplineRepository : IDisciplineMutationRepository
-{
-    
-}

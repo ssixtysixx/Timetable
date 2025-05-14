@@ -1,4 +1,5 @@
-﻿using Timetable.Storage.Framework;
+﻿using Timetable.Framework;
+using Timetable.Storage.Framework;
 
 namespace Timetable.Storage.Database.Repositories;
 

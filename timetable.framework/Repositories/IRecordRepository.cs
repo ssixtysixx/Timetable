@@ -9,7 +9,3 @@ public interface IRecordMutationRepository : IRecordRepository
 {
 
 }
-public class RecordRepository : IRecordMutationRepository
-{
-
-}
