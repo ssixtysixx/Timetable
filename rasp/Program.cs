@@ -1,4 +1,5 @@
 using Timetable.Framework;
+using Timetable.Storage.Framework;
 
 var builder = WebApplication.CreateBuilder(args);
 

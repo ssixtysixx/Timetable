@@ -1,8 +1,15 @@
 ﻿namespace Timetable.Framework.Records;
 
-public record DaySingleRecord
+public record DayRecord
 {
 	public required DateTime Date { get; init; }
+
+	public required List<DaySingleRecord> SingleRecords { get; init; }
+}
+
+public record DaySingleRecord
+{
+	public required int Number { get; init; }
 
 	public required DisciplineRecord Discipline { get; init; }
 

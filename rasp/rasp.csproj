@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\timetable.framework\timetable.framework.csproj" />
+    <ProjectReference Include="..\timetable.storage.framework\timetable.storage.framework.csproj" />
   </ItemGroup>
 
 </Project>

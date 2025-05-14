@@ -4,14 +4,10 @@ namespace Timetable.Framework;
 
 public interface IGroupRepository
 {
-
+	
 }
 
 public interface IGroupMutationRepository : IGroupRepository
-{
-
-}
-public class GroupRepository : IGroupMutationRepository
 {
 
 }
