@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <title>Расписание занятий</title>
     <style>
-        /* Ваши стили без изменений */
+
         body {
             font-family: Arial, sans-serif;
             background: #f6f8fa;
@@ -173,7 +173,7 @@
         dayFilter.addEventListener('change', filterSchedule);
         groupFilter.addEventListener('change', filterSchedule);
 
-        // Функция для генерации уникального ключа для каждой строки
+
         function getNoteKey(row) {
             const day = row.cells[0].textContent.trim();
             const time = row.cells[1].textContent.trim();
@@ -182,7 +182,7 @@
             return `note_${day}_${time}_${subject}_${group}`;
         }
 
-        // Загрузка сохранённых заметок из localStorage
+
         function loadNotes() {
             for (const row of tableBody.rows) {
                 const textarea = row.querySelector('textarea.note-input');
@@ -194,16 +194,15 @@
                     textarea.value = savedNote;
                 }
 
-                // Добавляем обработчик для сохранения при изменении
+
                 textarea.addEventListener('input', () => {
                     localStorage.setItem(key, textarea.value);
                 });
             }
         }
 
-        // Инициализация
         loadNotes();
-        filterSchedule(); // применить фильтры при загрузке (если нужно)
+        filterSchedule(); 
     </script>
 </body>
 </html>

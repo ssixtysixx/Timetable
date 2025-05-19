@@ -188,7 +188,7 @@
             </tr>
         </thead>
         <tbody id="scheduleBody">
-            <!-- Пример строки -->
+
             <tr>
                 <td>
                     <span class="static-text">Понедельник</span>
@@ -213,12 +213,12 @@
                 <td><textarea class="note-input" placeholder="Введите примечание"></textarea></td>
                 <td><button class="delete-row-btn">Удалить</button></td>
             </tr>
-            <!-- Остальные строки по аналогии -->
+
         </tbody>
     </table>
 
     <script>
-        // Фильтрация
+
         const dayFilter = document.getElementById('dayFilter');
         const groupFilter = document.getElementById('groupFilter');
         const tableBody = document.getElementById('scheduleBody');
@@ -244,7 +244,7 @@
         dayFilter.addEventListener('change', filterSchedule);
         groupFilter.addEventListener('change', filterSchedule);
 
-        // Редактирование
+
         editBtn.addEventListener('click', () => {
             document.body.classList.add('edit-mode');
             editBtn.style.display = 'none';
@@ -252,7 +252,7 @@
             saveBtn.style.display = 'inline-block';
         });
 
-        // Добавление новой строки
+
         addRowBtn.addEventListener('click', () => {
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
@@ -281,14 +281,14 @@
             `;
             tableBody.appendChild(newRow);
 
-             // Назначаем обработчик для новой кнопки "Удалить"
+
             const deleteButton = newRow.querySelector('.delete-row-btn');
             deleteButton.addEventListener('click', function () {
                 newRow.remove();
             });
         });
 
-        // Сохранение
+
         saveBtn.addEventListener('click', () => {
             document.querySelectorAll('.editable-field').forEach(input => {
                 const staticText = input.previousElementSibling;
@@ -304,7 +304,7 @@
 
            const scheduleData = [];
             document.querySelectorAll('#scheduleBody tr').forEach(row => {
-                // Проверяем, не является ли строка удаленной (display: none)
+
                 if (row.style.display !== 'none') {
                     const rowData = {
                         day: row.cells[0].querySelector('input').value,
@@ -322,7 +322,7 @@
             alert('Изменения сохранены!');
         });
 
-        // Восстановление данных
+
         window.addEventListener('load', () => {
             const savedData = JSON.parse(localStorage.getItem('schedule'));
             if (savedData) {
@@ -355,7 +355,7 @@
                     `;
                     tableBody.appendChild(newRow);
 
-                    // Назначаем обработчик для новой кнопки "Удалить"
+
                     const deleteButton = newRow.querySelector('.delete-row-btn');
                     deleteButton.addEventListener('click', function () {
                         newRow.remove();
@@ -364,7 +364,7 @@
             }
         });
 
-        // Делегированный обработчик для удаления строк
+
         tableBody.addEventListener('click', function (event) {
             if (event.target.classList.contains('delete-row-btn')) {
                 event.target.closest('tr').remove();

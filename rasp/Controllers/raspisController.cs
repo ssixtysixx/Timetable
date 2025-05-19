@@ -19,7 +19,7 @@ public class RaspisController : Controller
     }
     public ActionResult Index()
     {
-        // Создаем расписание
+
         var schedule = new List<Raspisanie>
         {
             new Raspisanie { Id = 1, DayOfWeek = "Понедельник", Time = "09:00 - 10:30", Subject = "Математика", Teacher = "Иванов", Room = "101" },
@@ -29,7 +29,6 @@ public class RaspisController : Controller
             new Raspisanie { Id = 5, DayOfWeek = "Четверг", Time = "10:40 - 12:10", Subject = "История", Teacher = "Васильева", Room = "207" }
         };
 
-        // Преобразуем в SelectListItem для ListBox
         var listItems = schedule.Select(x => new SelectListItem
         {
             Text = $"{x.DayOfWeek} | {x.Time} | {x.Subject} | {x.Teacher} | Ауд. {x.Room}",
@@ -44,12 +43,12 @@ public class RaspisController : Controller
     [HttpPost]
     public ActionResult Index(List<int> SelectedItems)
     {
-        // Обработка выбранных занятий (например, запись в БД)
+
         if (SelectedItems != null)
         {
             foreach (var id in SelectedItems)
             {
-                // Логика обработки выбранных элементов
+
             }
         }
         return RedirectToAction("Index");

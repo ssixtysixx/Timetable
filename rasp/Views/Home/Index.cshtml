@@ -62,7 +62,7 @@
             .register-link:hover {
                 text-decoration: underline;
             }
-        /* Модальное окно */
+
         .modal {
             display: none;
             position: fixed;
@@ -107,13 +107,13 @@
             <input type="password" name="password" placeholder="Пароль" required />
             <button type="submit">Войти</button>
         </form>
-        <!-- кнопка расписание -->
+
         <form>
             <a href="raspis" style="flex: 1; display: inline-block; text-align: center; padding: 10px 0; background: #d00; color: white; border-radius: 4px; text-decoration: none; font-size: 16px; cursor: pointer;">
                 Расписание
             </a>
         </form>
-        <!-- кнопка админ расписание -->
+
         <form>
             <a href="raspisadmin" style="flex: 1; display: inline-block; text-align: center; padding: 10px 0; background: #d00; color: white; border-radius: 4px; text-decoration: none; font-size: 16px; cursor: pointer;">
                 Админ
@@ -122,7 +122,7 @@
         <a class="register-link" id="openRegister">Регистрация</a>
     </div>
 
-    <!-- Модальное окно регистрации -->
+
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeModal">&times;</span>
@@ -137,15 +137,15 @@
     </div>
 
     <script>
-        // Открыть модальное окно
+
         document.getElementById('openRegister').onclick = function() {
             document.getElementById('registerModal').style.display = 'block';
         };
-        // Закрыть модальное окно
+
         document.getElementById('closeModal').onclick = function() {
             document.getElementById('registerModal').style.display = 'none';
         };
-        // Закрыть по клику вне модального окна
+
         window.onclick = function(event) {
             if (event.target == document.getElementById('registerModal')) {
                 document.getElementById('registerModal').style.display = 'none';
