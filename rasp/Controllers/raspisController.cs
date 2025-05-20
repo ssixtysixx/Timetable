@@ -103,12 +103,12 @@ public class RaspisController : Controller
 	[HttpPost]
 	public ActionResult Index(List<int> SelectedItems)
 	{
-		// Обработка выбранных занятий (например, запись в БД)
+
 		if (SelectedItems != null)
 		{
 			foreach (var id in SelectedItems)
 			{
-				// Логика обработки выбранных элементов
+				
 			}
 		}
 		return RedirectToAction("Index");
