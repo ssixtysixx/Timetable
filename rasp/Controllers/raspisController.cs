@@ -47,7 +47,7 @@ public class RaspisController : Controller
 		return View();
 	}
 
-	public async Task ActivateAsync()
+	public async Task<ActionResult> ActivateAsync()
 	{
 		var group = new GroupRecord { Name = "0110" };
 
@@ -91,11 +91,13 @@ public class RaspisController : Controller
 						},
 				]},
 			]
-		};
+		}; 
 
 		var groupList = new List<GroupDayRecord>() { groupDayRecord };
 
 		Records = groupList;
+
+		return View(groupList);
 	}
 
 	[HttpPost]

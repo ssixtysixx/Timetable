@@ -122,33 +122,112 @@
     }
 </style>
 
-@using (Html.BeginForm())
-{
-    <table>
-        <thead>
-            <tr>
-                <th>День недели</th>
-                <th>Время</th>
-                <th>Предмет</th>
-                <th>Преподаватель</th>
-                <th>Аудитория</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in ViewBag.ScheduleItems as List<SelectListItem>)
-            {
-                <tr>
-                    <td>@item.Text.Split('|')[0].Trim()</td>
-                    <td>@item.Text.Split('|')[1].Trim()</td>
-                    <td>@item.Text.Split('|')[2].Trim()</td>
-                    <td>@item.Text.Split('|')[3].Trim()</td>
-                    <td>@item.Text.Split('|')[4].Trim()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @model List<Timetable.Framework.Records.GroupDayRecord>
 
-}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f8fa;
+            padding: 20px;
+        }
+
+        h1, h2, h3, h4 {
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .group-container {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 0 auto 30px auto;
+            padding: 20px;
+            border-radius: 4px;
+            max-width: 900px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+
+        th {
+            background: #d00;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .day-schedule {
+            margin: 0 auto 30px auto;
+            padding: 15px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            max-width: 850px;
+        }
+
+        .day-header {
+            color: #000;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+    </style>
+
+    @foreach (var group in Model)
+    {
+        <div class="group-container">
+            <h2>Группа: @group.GroupRecord.Name</h2>
+
+            @foreach (var day in group.Records)
+            {
+                <div class="day-schedule">
+                    <h3 class="day-header">Дата: @day.Date.ToString("dd.MM.yyyy")</h3>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Дисциплина</th>
+                                <th>Преподаватель</th>
+                                <th>Аудитория</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var record in day.SingleRecords)
+                            {
+                                <tr>
+                                    <td>@record.Number</td>
+                                    <td>@record.Discipline.DisciplineCode</td>
+                                    <td>@record.Teacher.Name</td>
+                                    <td>@record.Place.PlaceName (@record.Place.PlaceType)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    }
 
     <script>
         const dayFilter = document.getElementById('dayFilter');
