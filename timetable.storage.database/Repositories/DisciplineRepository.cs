@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Timetable.Framework;
 using Timetable.Framework.Records;
+using Timetable.Storage.Database;
 
 namespace Timetable.Storage.Framework;
 
-public sealed class DisciplineRepository(TimetableDBContext timetableDbContext) : IDisciplineRepository
+public sealed class DisciplineRepository(IContextFactory contextFactory) : IDisciplineRepository
 {
-	private TimetableDBContext _context = timetableDbContext;
+	private IContextFactory _contextFactory = contextFactory;
 
 	public Task<long> CountAllAsync(CancellationToken cancellationToken)
 	{
@@ -16,7 +17,9 @@ public sealed class DisciplineRepository(TimetableDBContext timetableDbContext) 
 
 	public async Task<IEnumerable<DisciplineRecord>> GetAllAsync(CancellationToken cancellationToken)
 	{
-		var entities = _context.DisciplinesEntity.AsNoTracking();
+		using var context = _contextFactory.CreateContext();
+
+		var entities = context.DisciplinesEntity.AsNoTracking();
 
 		return entities.Select(x => x.Adapt<DisciplineRecord>());
 	}

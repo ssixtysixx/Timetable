@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Timetable.Framework;
 using Timetable.Framework.Records;
+using Timetable.Storage.Database;
 
 namespace Timetable.Storage.Framework;
 
-public sealed class RecordRepository : IRecordMutationRepository
+public sealed class RecordRepository(IContextFactory contextFactory) : IRecordMutationRepository
 {
-	private TimetableDBContext _context;
+	private IContextFactory _contextFactory = contextFactory;
 
 	public Task<IEnumerable<DayRecord>> GetAllDayRecords(CancellationToken cancellationToken)
 	{
@@ -19,9 +20,11 @@ public sealed class RecordRepository : IRecordMutationRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<DayRecord> GetDayRecordsByDate(DateTime date, CancellationToken cancellationToken)
+	public async Task<DayRecord> GetDayRecordsByDate(DateTime date, CancellationToken cancellationToken)
 	{
-		var records = _context
+		using var context = _contextFactory.CreateContext();
+
+		var records = context
 			.TimetableRecords
 			.AsNoTracking()
 			.Include(x => x.Group)
@@ -40,6 +43,6 @@ public sealed class RecordRepository : IRecordMutationRepository
 			Place = x.Place.Adapt<PlaceRecord>(),
 		});
 
-		return Task.FromResult(new DayRecord { Date = date, SingleRecords = daySingeRecords.ToList() });
+		return new DayRecord { Date = date, SingleRecords = daySingeRecords.ToList() };
 	}
 }

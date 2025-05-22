@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Timetable.Framework;
+using Timetable.Storage.Database;
 using Timetable.Storage.Framework;
 
 internal class Program
@@ -21,6 +22,8 @@ internal class Program
 		});
 
 		builder.Services.AddScoped<TimetableDBContext>();
+
+		builder.Services.AddScoped<IContextFactory, ContextFactory>();
 
 		builder.Services.AddScoped<IDisciplineRepository, DisciplineRepository>();
 
