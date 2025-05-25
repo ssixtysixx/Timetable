@@ -24,7 +24,7 @@ public sealed class TimetableDBContext : DbContext
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=TestAppDatabase;Trusted_Connection=False");
+		//optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=TestAppDatabase;Trusted_Connection=False");
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)

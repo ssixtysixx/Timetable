@@ -1,12 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@model rasp.Controllers.ScheduleViewModel
+@using System.Globalization
+
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
 </head>
 <body>
 
-    @model List<Timetable.Framework.Records.GroupDayRecord>
-    <h1>Расписание занятий</h1>
+    <h1 class="page-title">Расписание занятий</h1>
 
     <!-- Кнопка авторизации -->
     <button class="auth-btn" id="authBtn">Авторизация</button>
@@ -14,78 +16,143 @@
     <!-- Модальное окно авторизации -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close">×</span>
 
             <h2>Вход в систему</h2>
 
             <form class="auth-form">
-                <input type="text" placeholder="Логин" required>
-                <input type="password" placeholder="Пароль" required>
-                <button type="submit">Войти</button>
+                <input type="text" name="login" placeholder="Логин" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit" id="loginBtn">Войти</button>
             </form>
+            <div class="error-message" id="errorMessage"></div>
         </div>
     </div>
 
-    @foreach (var group in Model)
-    {
-        <div class="group-container">
-            <div class="group-header">
-                <h2 class="group-name">Группа: @group.GroupRecord.Name</h2>
-                <div class="days-container">
-                    @foreach (var day in group.Records)
-                    {
-                        <div class="day-schedule">
-                            <h3 class="day-header">Дата: @day.Date.ToString("dd.MM.yyyy")</h3>
 
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>№</th>
-                                        <th>Дисциплина</th>
-                                        <th>Преподаватель</th>
-                                        <th>Аудитория</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var record in day.SingleRecords)
+    <div class="filters">
+        <div class="filter">
+            <label for="dayFilter">День недели:</label>
+            <select id="dayFilter">
+                <option value="all">Все</option>
+                @foreach (var day in Model.Days)
+                {
+                    <option value="@day">@day</option>
+                }
+            </select>
+        </div>
+        <div class="filter">
+            <label for="groupFilter">Группа:</label>
+            <select id="groupFilter">
+                <option value="all">Все</option>
+                @foreach (var grp in Model.Groups)
+                {
+                    <option value="@grp">@grp</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div id="scheduleContainer">
+        @foreach (var day in Model.Days)
+        {
+            <div class="day-section" data-day="@day">
+                <h2 class="day-title">@day</h2>
+                <div class="grid-container">
+                    @foreach (var grpRec in Model.Data)
+                    {
+                        var grpName = grpRec.GroupRecord.Name;
+                        <div class="group-card" data-group="@grpName">
+                            <h3 class="group-title">Группа @grpName</h3>
+                            <div class="classes-list">
+                                @foreach (var dr in grpRec.Records.Where(r =>
+                               r.Date.ToString("dddd", new CultureInfo("ru-RU")) == day))
+                                {
+                                    @foreach (var cls in dr.SingleRecords)
                                     {
-                                        <tr>
-                                            <td>@record.Number</td>
-                                            <td>@record.Discipline.DisciplineCode</td>
-                                            <td>@record.Teacher.Name</td>
-                                            <td>@record.Place.PlaceName (@record.Place.PlaceType)</td>
-                                        </tr>
+                                        <div class="class-item" data-number="@cls.Number">
+                                            <div class="class-main">
+                                                <span class="subject">@cls.Discipline.DisciplineCode</span>
+                                                <span class="separator">|</span>
+                                                <span class="place">@cls.Place.PlaceName</span>
+                                                <span class="time">Пара №@cls.Number</span>
+                                            </div>
+                                            <div class="class-teacher">@cls.Teacher.Name</div>
+                                            <div class="class-actions">
+                                                <textarea class="note-input"></textarea>
+                                                <button class="delete-btn">Удалить</button>
+                                            </div>
+                                        </div>
                                     }
-                                </tbody>
-                            </table>
+                                }
+                            </div>
                         </div>
                     }
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 
     <script>
-        // Получаем элементы
         const authBtn = document.getElementById('authBtn');
         const modal = document.getElementById('authModal');
         const closeBtn = document.querySelector('.close');
+        const dayFilter   = document.getElementById('dayFilter');
+        const groupFilter = document.getElementById('groupFilter');
 
-        // Открываем модальное окно при клике на кнопку
         authBtn.addEventListener('click', () => {
             modal.style.display = 'block';
+            document.getElementById('errorMessage').textContent = '';
         });
 
-        // Закрываем модальное окно при клике на крестик
+        function applyFilters() {
+            const dayVal = dayFilter.value;
+            const grpVal = groupFilter.value;
+            document.querySelectorAll('.day-section').forEach(sec => {
+                sec.style.display = (dayVal === 'all' || sec.dataset.day === dayVal) ? '' : 'none';
+            });
+            document.querySelectorAll('.group-card').forEach(card => {
+                card.style.display = (grpVal === 'all' || card.dataset.group === grpVal) ? '' : 'none';
+            });
+        }
+
+        dayFilter.addEventListener('change', applyFilters);
+        groupFilter.addEventListener('change', applyFilters);
+
         closeBtn.addEventListener('click', () => {
             modal.style.display = 'none';
         });
 
-        // Закрываем модальное окно при клике вне его
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
+        });
+
+        document.querySelector('.auth-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+
+            fetch('/Raspis/Login', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/raspisadmin';
+                } else {
+                    document.getElementById('errorMessage').textContent = data.message;
+                }
+            })
+            .catch(error => {
+                document.getElementById('errorMessage').textContent = 'Произошла ошибка при попытке входа.';
+            })
+            .finally(() => {
+                loginBtn.disabled = false;
+            });
         });
     </script>
 </body>

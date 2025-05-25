@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="TechTeaStudio.Config" Version="0.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\timetable.framework\timetable.framework.csproj" />
     <ProjectReference Include="..\timetable.storage.database\timetable.storage.database.csproj" />
     <ProjectReference Include="..\timetable.storage.framework\timetable.storage.framework.csproj" />

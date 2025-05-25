@@ -7,12 +7,12 @@ class Program
 	{
 		var options = new DbContextOptionsBuilder<TimetableDBContext>();
 
-		options.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=TestAppDatabase;Trusted_Connection=False");
+		options.UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = NikitaBase; Integrated Security = True; Connect Timeout = 30; Encrypt = False; Trust Server Certificate = True; Application Intent = ReadWrite; Multi Subnet Failover = False");
 
 		var context = new TimetableDBContext(options.Options);
-
-		var repo = new DisciplineRepository(context);
+		context.Database.EnsureCreated();
+		//var repo = new DisciplineRepository(context);
 		
-		var res = await repo.GetAllAsync(CancellationToken.None);
+		//var res = await repo.GetAllAsync(CancellationToken.None);
 	}
 }
