@@ -1,4 +1,4 @@
-﻿@model rasp.Controllers.ScheduleViewModel
+﻿@model rasp.Controllers.ScheduleViewModel 
 @using System.Globalization
 
 <!DOCTYPE html>
@@ -6,168 +6,14 @@
 <head>
     <meta charset="UTF-8" />
     <title>Расписание занятий</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f6f8fa;
-            padding: 20px;
-            position: relative;
-        }
+    <link rel="stylesheet" href="~/css/schedule.css" asp-append-version="true" />
 
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        .controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            background: #d00;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-            button:hover {
-                background: #b00;
-            }
-
-        .filters {
-            max-width: 600px;
-            margin: 0 auto 20px auto;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-            .filters div {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-        .day-section {
-            margin-bottom: 20px;
-        }
-
-            .day-section h2 {
-                background: #d00;
-                color: #fff;
-                padding: 12px 15px;
-                margin: 0 0 10px;
-                text-align: center;
-                border-radius: 4px;
-            }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            width: 95%;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .group-card {
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-radius: 4px;
-            padding: 15px;
-            text-align: center;
-        }
-
-            .group-card h3 {
-                margin: 0 0 10px;
-                font-size: 1.1em;
-                color: #333;
-            }
-
-        .class-item {
-            padding: 8px 0;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-
-            .class-item:last-child {
-                border-bottom: none;
-            }
-
-        .editable-field, .note-input {
-            display: none;
-            width: 100%;
-            padding: 4px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            box-sizing: border-box;
-            text-align: center;
-        }
-
-        .note-input {
-            min-height: 60px;
-            resize: vertical;
-            border-color: #ccc;
-        }
-
-        .edit-mode .static-text {
-            display: none;
-        }
-
-        .edit-mode .editable-field, .edit-mode .note-input {
-            display: block;
-        }
-
-        .edit-mode .note-input {
-            background: #fff;
-            border-color: #d00;
-        }
-
-        .delete-btn {
-            background: #b00;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            display: none;
-        }
-
-            .delete-btn:hover {
-                background: #900;
-            }
-
-        .edit-mode .delete-btn {
-            display: inline-block;
-        }
-
-        #addRowBtn, #saveBtn {
-            display: none;
-        }
-
-        .edit-mode #addRowBtn, .edit-mode #saveBtn {
-            display: inline-block;
-        }
-
-        .edit-mode #editBtn {
-            display: none;
-        }
-    </style>
 </head>
 <body>
     <div class="controls">
         <button id="editBtn">Редактировать</button>
-        <button id="saveBtn" style="display:none;">Сохранить</button>
+        <button id="saveBtn">Сохранить</button>
+        <button id="addBtn">Добавить</button>
     </div>
 
     <h1 class="page-title">Расписание занятий</h1>
@@ -205,6 +51,8 @@
                     {
                         var grpName = grpRec.GroupRecord.Name;
                         <div class="group-card" data-group="@grpName">
+                            <span class="remove-day" title="Удалить">×</span>
+
                             <h3 class="group-title">Группа @grpName</h3>
                             <div class="classes-list">
                                 @foreach (var dr in grpRec.Records.Where(r =>
@@ -212,18 +60,14 @@
                                 {
                                     @foreach (var cls in dr.SingleRecords)
                                     {
-                                        <div class="class-item" data-number="@cls.Number">
+                                        <div class="class-item">
                                             <div class="class-main">
+                                                <span class="time">№@cls.Number</span>
                                                 <span class="subject">@cls.Discipline.DisciplineCode</span>
                                                 <span class="separator">|</span>
                                                 <span class="place">@cls.Place.PlaceName</span>
-                                                <span class="time">Пара №@cls.Number</span>
                                             </div>
                                             <div class="class-teacher">@cls.Teacher.Name</div>
-                                            <div class="class-actions">
-                                                <textarea class="note-input"></textarea>
-                                                <button class="delete-btn">Удалить</button>
-                                            </div>
                                         </div>
                                     }
                                 }
@@ -236,78 +80,56 @@
     </div>
 
 
-    <script>
-        const saveUrl     = '@Url.Action("Save", "RaspisAdmin")';
-        const editBtn     = document.getElementById('editBtn');
-        const saveBtn     = document.getElementById('saveBtn');
-        const dayFilter   = document.getElementById('dayFilter');
-        const groupFilter = document.getElementById('groupFilter');
+    <dialog id="addDialog">
+        <div class="dialog-header">Добавить расписание на один день</div>
+        <div class="dialog-body">
+            <form id="addForm" action='@Url.Action("AddDaySchedule","RaspisAdmin")' method="post">
+                <label for="lessonDate">Дата</label>
+                <input type="date" id="lessonDate" name="Date" required />
+                <div id="dayOfWeekDisplay" style="margin-top: 6px; font-weight: 500; color: #444;"></div>
 
-        function applyFilters() {
-            const dayVal = dayFilter.value;
-            const grpVal = groupFilter.value;
-            document.querySelectorAll('.day-section').forEach(sec => {
-                sec.style.display = (dayVal === 'all' || sec.dataset.day === dayVal) ? '' : 'none';
-            });
-            document.querySelectorAll('.group-card').forEach(card => {
-                card.style.display = (grpVal === 'all' || card.dataset.group === grpVal) ? '' : 'none';
-            });
-        }
-        dayFilter.addEventListener('change', applyFilters);
-        groupFilter.addEventListener('change', applyFilters);
+                <label for="lessonGroup">Группа</label>
+                <select id="lessonGroup" name="GroupName" required>
+                    @foreach (var g in Model.Groups)
+                    {
+                        <option value="@g">@g</option>
+                    }
+                </select>
 
-        editBtn.addEventListener('click', () => {
-            document.body.classList.add('edit-mode');
-            saveBtn.style.display = 'inline-block';
-            editBtn.style.display = 'none';
-        });
+                <!-- Контейнер для строк с парами -->
+                <div id="lessonsContainer">
+                    <!-- Первая строка пар по умолчанию -->
+                    <div class="lesson-row">
+                        <div>
+                            <label>№ пары</label>
+                            <input type="number" name="Lessons[0].Number" min="1" max="10" value="1" required readonly />
+                        </div>
+                        <div>
+                            <label>Дисциплина</label>
+                            <input type="text" name="Lessons[0].DisciplineCode" required />
+                        </div>
+                        <div>
+                            <label>Аудитория</label>
+                            <input type="text" name="Lessons[0].PlaceName" required />
+                        </div>
+                        <div>
+                            <label>Преподаватель</label>
+                            <input type="text" name="Lessons[0].TeacherName" required />
+                        </div>
+                        <button type="button" class="delete-row-btn">×</button>
+                    </div>
+                </div>
 
-        saveBtn.addEventListener('click', async () => {
-            const lessons = [];
-            document.querySelectorAll('.class-item').forEach(item => {
-                if (!item.offsetParent) return;
-                const dayOfWeek = item.closest('.day-section').dataset.day;
-                const group     = item.closest('.group-card').dataset.group;
-                const number    = +item.dataset.number;
-                const disciplineCode = item.querySelector('.subject-input')?.value
-                                       || item.querySelector('.subject')?.textContent.trim();
-                const teacherName    = item.querySelector('.class-teacher')?.textContent.trim();
-                const placeName      = item.querySelector('.place-input')?.value
-                                       || item.querySelector('.place')?.textContent.trim();
+                <button type="button" class="add-row-btn" id="addLessonRow">+ Добавить пару</button>
+            </form>
+        </div>
+        <div class="dialog-footer">
+            <button type="submit" form="addForm">OK</button>
+            <button type="button" id="cancelAdd">Cancel</button>
+        </div>
+    </dialog>
 
-                lessons.push({
-                    dayOfWeek,
-                    group,
-                    number,
-                    disciplineCode,
-                    teacherName,
-                    placeName
-                });
-            });
-
-            try {
-                const response = await fetch(saveUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(lessons)
-                });
-                const data = await response.json();
-                if (data.success) {
-                    alert('Изменения сохранены!');
-                    document.body.classList.remove('edit-mode');
-                    saveBtn.style.display = 'none';
-                    editBtn.style.display = 'inline-block';
-                } else {
-                    alert('Ошибка на сервере при сохранении');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Не удалось отправить данные на сервер');
-            }
-        });
-
-        window.addEventListener('load', applyFilters);
-    </script>
+    <script src="~/js/schedule.js" asp-append-version="true"></script>
 
 </body>
 </html>

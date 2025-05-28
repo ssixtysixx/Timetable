@@ -70,6 +70,10 @@ internal class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         var app = builder.Build();
 
+        var services = app.Services.CreateScope();
+        var context = services.ServiceProvider.GetRequiredService<TimetableDBContext>();
+        context.InitAdminUser();
+
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {

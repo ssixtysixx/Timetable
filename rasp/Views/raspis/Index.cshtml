@@ -5,6 +5,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="~/css/schedule.css" asp-append-version="true" />
 </head>
 <body>
 
@@ -70,18 +71,14 @@
                                 {
                                     @foreach (var cls in dr.SingleRecords)
                                     {
-                                        <div class="class-item" data-number="@cls.Number">
+                                        <div class="class-item">
                                             <div class="class-main">
+                                                <span class="time">№@cls.Number</span>
                                                 <span class="subject">@cls.Discipline.DisciplineCode</span>
                                                 <span class="separator">|</span>
                                                 <span class="place">@cls.Place.PlaceName</span>
-                                                <span class="time">Пара №@cls.Number</span>
                                             </div>
                                             <div class="class-teacher">@cls.Teacher.Name</div>
-                                            <div class="class-actions">
-                                                <textarea class="note-input"></textarea>
-                                                <button class="delete-btn">Удалить</button>
-                                            </div>
                                         </div>
                                     }
                                 }

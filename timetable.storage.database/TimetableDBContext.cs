@@ -31,4 +31,14 @@ public sealed class TimetableDBContext : DbContext
 	{
 		base.OnModelCreating(modelBuilder);
 	}
+
+    public void InitAdminUser()
+    {
+        var adminUser = UserAdminEntities.FirstOrDefault(u => u.Login == "123" && u.Password == "123");
+        if (adminUser == null)
+        {
+            UserAdminEntities.Add(new UserAdminEntity { Login = "123", Password = "123" });
+            SaveChanges();
+        }
+    }
 }
