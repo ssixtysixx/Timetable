@@ -6,7 +6,7 @@ using Timetable.Storage.Database.Entities;
 
 namespace Timetable.Storage.Framework.Repositories;
 
-public interface IUserRepository : IRepository<UserRecord>, IMutationRepository<UserRecord, UserAdminEntity>
+public interface IUserRepository
 {
     Task<IEnumerable<UserRecord>> GetAsync(Expression<Func<UserAdminEntity, bool>> filter);
 }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using System.Globalization;
+using Timetable.Storage.Framework;
 
 namespace rasp.Controllers;
 
@@ -25,13 +26,16 @@ public class RaspisController : Controller
 
     //TODO:
     public List<GroupDayRecord> Records { get; set; }
+    public IRecordMutationRepository _recordMutationRepository { get; }
 
     public RaspisController(
-        IUserRepository userRepository
+        IUserRepository userRepository,
+        IRecordMutationRepository recordMutationRepository
         )
     {
 
         _userRepository = userRepository;
+        _recordMutationRepository = recordMutationRepository;
     }
 
     [HttpGet]
@@ -43,46 +47,35 @@ public class RaspisController : Controller
 
     public async Task<ScheduleViewModel> ActivateAsync()
     {
-        var group = new GroupRecord { Name = "0110" };
-        var records = new List<DayRecord>
+        Dictionary<string, List<GroupByDayRecords>> list = [];
+
+        lock (this)
         {
-            new DayRecord
+            for (int i = 0; i < 7; i++)
             {
-                Date = DateTime.Now,
-                SingleRecords = new List<DaySingleRecord>
-                {
-                    new DaySingleRecord { Number = 1, Discipline = new DisciplineRecord{ DisciplineCode="dis01" }, Group=group, Teacher=new TeacherRecord{Name="FIO"}, Place=new PlaceRecord{PlaceName="place1",PlaceType=PlaceType.SportHall} },
-                    new DaySingleRecord { Number = 2, Discipline = new DisciplineRecord{ DisciplineCode="dis01" }, Group=group, Teacher=new TeacherRecord{Name="FIO"}, Place=new PlaceRecord{PlaceName="place1",PlaceType=PlaceType.SportHall} }
-                }
-            },
-            new DayRecord
-            {
-                Date = DateTime.Now.AddDays(1),
-                SingleRecords = new List<DaySingleRecord>
-                {
-                    new DaySingleRecord { Number = 1, Discipline = new DisciplineRecord{ DisciplineCode="dis01" }, Group=group, Teacher=new TeacherRecord{Name="FIO"}, Place=new PlaceRecord{PlaceName="place1",PlaceType=PlaceType.SportHall} }
-                }
+                var value = (
+                    _recordMutationRepository.GiveMeRecordForAllGroups(
+                        DateTime.Now.AddDays(i),
+                        CancellationToken.None
+                    )
+                ).Result;
+
+                if (value == null)
+                    continue;
+
+                list[ScheduleDayConverter.GetRussianDayOfWeek(DateTime.Now.AddDays(i).ToString("yyyy-MM-dd"))] = (value);
             }
-        };
-
-        var groupDayRecord = new GroupDayRecord
-        {
-            GroupRecord = group,
-            Records = records
-        };
-
-        var daysList = records
-            .Select(r => r.Date.ToString("dddd", new CultureInfo("ru-RU")))
-            .Distinct()
-            .ToList();
-        var groupsList = new List<string> { group.Name };
+        }
+        var groups = await _recordMutationRepository.GetAllGroupsNames();
 
         var vm = new ScheduleViewModel
         {
-            Days = daysList,
-            Groups = groupsList,
-            Data = new List<GroupDayRecord> { groupDayRecord }
+            Days = [.. ScheduleDayConverter.DaysOfWeek],
+
+            Groups = groups,
+            Data = list
         };
+
         return vm;
     }
 

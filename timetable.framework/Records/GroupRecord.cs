@@ -2,5 +2,5 @@
 
 public record GroupRecord
 {
-	public required string Name { get; init; }
+	public required string GroupName { get; init; }
 }

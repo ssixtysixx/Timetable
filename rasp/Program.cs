@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 using rasp;
 
+using System.Threading.Tasks;
+
 using TechTeaStudio.Config;
 
 using Timetable.Framework;
@@ -13,7 +15,7 @@ using Timetable.Storage.Framework.Repositories;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -57,21 +59,18 @@ internal class Program
 
         builder.Services.AddScoped<IContextFactory, ContextFactory>();
 
-        builder.Services.AddScoped<IDisciplineRepository, DisciplineRepository>();
-
-        builder.Services.AddScoped<IGroupRepository, GroupRepository>();
-
-        builder.Services.AddScoped<IPlaceRepository, PlaceRepository>();
-
         builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+        builder.Services.AddScoped<RecordRepository, RecordRepository>();
+        builder.Services.AddScoped<IRecordMutationRepository, RecordRepository>();
 
-        builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         var app = builder.Build();
 
         var services = app.Services.CreateScope();
         var context = services.ServiceProvider.GetRequiredService<TimetableDBContext>();
+        var repository = services.ServiceProvider.GetRequiredService<RecordRepository>();
+        //await repository.SeedTestData();
         context.InitAdminUser();
 
         // Configure the HTTP request pipeline.

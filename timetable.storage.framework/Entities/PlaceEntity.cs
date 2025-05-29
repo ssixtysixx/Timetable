@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Timetable.Storage.Framework;
+﻿using Timetable.Framework;
 
 namespace Timetable.Storage.Database.Entities;
 
