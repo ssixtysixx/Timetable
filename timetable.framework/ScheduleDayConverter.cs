@@ -1,4 +1,4 @@
-﻿namespace rasp.Controllers;
+﻿namespace Timetable.Framework;
 
 using System.Globalization;
 

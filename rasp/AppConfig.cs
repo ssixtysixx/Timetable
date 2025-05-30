@@ -1,4 +1,4 @@
-﻿namespace rasp;
+﻿namespace Rasp;
 
 public sealed class AppConfig
 {

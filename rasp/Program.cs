@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
-using rasp;
+using Rasp;
 
 using System.Threading.Tasks;
 
@@ -58,6 +58,8 @@ internal class Program
         builder.Services.AddScoped<TimetableDBContext>();
 
         builder.Services.AddScoped<IContextFactory, ContextFactory>();
+
+        builder.Services.AddScoped<IDayRepository, DayRepository>();
 
         builder.Services.AddScoped<IRecordRepository, RecordRepository>();
         builder.Services.AddScoped<RecordRepository, RecordRepository>();

@@ -1,4 +1,4 @@
-namespace rasp.Models
+namespace Rasp.Models
 {
     public class ErrorViewModel
     {

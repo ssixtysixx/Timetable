@@ -1,5 +1,4 @@
-﻿/* ----------------- Общие стили ----------------- */
-body {
+﻿body {
     font-family: Arial, sans-serif;
     background: #f6f8fa;
     padding: 20px;
@@ -11,14 +10,6 @@ h1.page-title {
     margin-bottom: 20px;
     color: #1a1f71;
     font-size: 2rem;
-}
-
-.controls {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 10px;
 }
 
 button {
@@ -35,7 +26,26 @@ button {
     button:hover {
         background: #b00;
     }
-/* ----------------- Фильтры ----------------- */
+
+/* ================= Кнопки управления ================= */
+.controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+#addBtn, #saveBtn {
+    display: none;
+}
+
+.edit-mode #addBtn,
+.edit-mode #saveBtn {
+    display: inline-block;
+}
+
+/* ================= фильтры ================= */
 .filters {
     display: flex;
     justify-content: center;
@@ -61,13 +71,14 @@ button {
         background: #fff;
         font-size: 0.95rem;
     }
-/* -----------------Карточки ----------------- */
+
+/* ================= Расписание: карточки ================= */
 .day-title {
     background: #d00;
     color: #fff;
     padding: 10px 0;
-    text-align: center;
     margin: 0 0 15px;
+    text-align: center;
     font-size: 1.25rem;
     border-radius: 4px;
 }
@@ -89,23 +100,6 @@ button {
     flex-direction: column;
 }
 
-.remove-day {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    font-size: 1.2rem;
-    color: #b00;
-    cursor: pointer;
-    display: none;
-    background: #fff;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    text-align: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
-
 .group-title {
     background: #d00;
     color: #fff;
@@ -121,6 +115,8 @@ button {
 }
 
 .class-item {
+    display: flex;
+    flex-direction: column;
     border-bottom: 1px solid #eee;
     padding: 8px 0;
 }
@@ -154,24 +150,23 @@ button {
     margin-top: 4px;
 }
 
-.class-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 6px;
-    align-items: flex-start;
-}
-
-.note-input, .delete-btn {
+/* ================= Удаление дня ================= */
+.remove-day {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #b00;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    cursor: pointer;
     display: none;
-}
-
-.edit-mode .note-input, .edit-mode .delete-btn {
-    display: block;
-}
-
-/* ----------------- Кнопки редктирования/добавления ----------------- */
-#addBtn, #saveBtn {
-    display: none;
+    transition: background .2s, color .2s;
 }
 
 .edit-mode .remove-day {
@@ -183,25 +178,15 @@ button {
     color: #900;
 }
 
-.edit-mode #addBtn, .edit-mode #saveBtn {
-    display: inline-block;
-}
-
-.edit-mode #editBtn {
-    display: none;
-}
-
-/* ----------------- Диалоговое окно ----------------- */
+/* ================= Диалоговое окно ================= */
 dialog#addDialog {
     width: 90%;
     max-width: 600px;
     border: none;
     border-radius: 10px;
-    padding: 0;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
     background: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
     overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
     dialog#addDialog::backdrop {
@@ -215,11 +200,12 @@ dialog#addDialog {
     padding: 16px 24px;
     font-size: 1.3rem;
     font-weight: 600;
-    letter-spacing: 0.5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .dialog-body {
+    max-height: 60vh; 
+    overflow-y: auto; 
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -228,24 +214,23 @@ dialog#addDialog {
 }
 
     .dialog-body label {
-        font-weight: 600;
+        display: block;
         margin-bottom: 6px;
+        font-weight: 600;
         color: #444;
         font-size: 0.95rem;
-        display: block;
     }
 
     .dialog-body select,
     .dialog-body input {
+        width: 100%;
         padding: 10px 14px;
         border: 1px solid #ddd;
         border-radius: 6px;
         font-size: 1rem;
-        width: 100%;
-        box-sizing: border-box;
-        transition: all 0.2s;
         background: #fff;
         box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+        transition: border-color .2s, box-shadow .2s;
     }
 
         .dialog-body select:focus,
@@ -256,18 +241,17 @@ dialog#addDialog {
         }
 
 .lesson-row {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    align-items: end;
-    position: relative;
     padding: 18px;
+    margin-bottom: 12px;
+    background: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    background: #fff;
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-    margin-bottom: 12px;
+    transition: border-color .3s, box-shadow .3s, transform .3s;
 }
 
     .lesson-row:hover {
@@ -290,22 +274,18 @@ dialog#addDialog {
     background: #f5f5f5;
     border: 1px solid #ddd;
     border-radius: 50%;
-    font-size: 1.4rem;
-    cursor: pointer;
     color: #999;
+    font-size: 1.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
-    box-sizing: border-box; 
-    padding: 0; 
-    line-height: 1;
+    cursor: pointer;
+    transition: background .2s, color .2s, transform .2s;
 }
 
     .delete-row-btn:hover {
         background: #d00;
-        color: white;
-        border-color: #d00;
+        color: #fff;
         transform: scale(1.1);
     }
 
@@ -314,23 +294,18 @@ dialog#addDialog {
     justify-self: start;
     background: #f0f7ff;
     color: #0078d7;
-    font-size: 1rem;
+    font-weight: 600;
     padding: 8px 16px;
     border: 1px dashed #0078d7;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
+    transition: background .3s, box-shadow .3s, transform .3s;
 }
 
     .add-row-btn:hover {
         background: #e1f0ff;
-        border-style: solid;
-        transform: translateY(-2px);
         box-shadow: 0 2px 8px rgba(0,120,215,0.2);
+        transform: translateY(-2px);
     }
 
 .dialog-footer {
@@ -347,12 +322,12 @@ dialog#addDialog {
         border-radius: 6px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: background .2s, box-shadow .2s;
     }
 
         .dialog-footer button[type="submit"] {
             background: linear-gradient(135deg, #d00, #a00);
-            color: white;
+            color: #fff;
             border: none;
         }
 
@@ -374,13 +349,14 @@ dialog#addDialog {
 
 @media (max-width: 600px) {
     .dialog-body {
+        max-height: 50vh;
         padding: 16px;
         gap: 12px;
     }
 
     .lesson-row {
         grid-template-columns: 1fr;
-        padding: 16px 16px 16px 16px;
+        padding: 16px;
     }
 
     .delete-row-btn {
@@ -388,11 +364,7 @@ dialog#addDialog {
         right: 8px;
     }
 
-    .dialog-footer {
-        padding: 12px 16px;
+    .dialog-footer button {
+        padding: 8px 16px;
     }
-
-        .dialog-footer button {
-            padding: 8px 16px;
-        }
 }

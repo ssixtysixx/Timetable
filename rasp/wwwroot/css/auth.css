@@ -182,10 +182,10 @@ h1 {
     transition: background-color 0.3s ease;
 }
 
-#loginBtn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
+    #loginBtn:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
 
 .group-container {
     background: #fff;

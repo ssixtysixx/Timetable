@@ -1,4 +1,4 @@
-﻿namespace rasp.Controllers;
+﻿namespace Timetable.Framework.Records;
 
 using System;
 using System.Collections.Generic;

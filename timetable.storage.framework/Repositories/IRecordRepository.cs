@@ -1,6 +1,4 @@
-﻿using rasp.Controllers;
-
-using Timetable.Framework.Records;
+﻿using Timetable.Framework.Records;
 
 namespace Timetable.Framework;
 
@@ -16,4 +14,6 @@ public interface IRecordMutationRepository : IRecordRepository
     Task<List<string>> GetAllGroupsNames();
 
     Task<bool> AddNewGroupRecord(DayScheduleDto dayScheduleDto);
+
+    Task<bool> ExistsScheduleForGroupOnDate(DayScheduleDto dayScheduleDto);
 }

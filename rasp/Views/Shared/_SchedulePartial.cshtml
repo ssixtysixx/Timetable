@@ -1,0 +1,48 @@
+﻿@model Rasp.Controllers.ScheduleViewModel
+
+@{
+    bool showRemoveButton = ViewBag.ShowRemoveButton ?? false;
+}
+<div id="scheduleContainer">
+    @foreach (var day in Model.Days)
+    {
+        <div class="day-section" data-day="@day">
+            <h2 class="day-title">@day @Model.Data[day].FirstOrDefault()?.Date.ToShortDateString()</h2>
+            <div class="grid-container">
+                @foreach (var grpRec in Model.Data[day])
+                {
+                    if (grpRec.SingleRecords != null && grpRec.SingleRecords.Count > 0)
+                    {
+                        var grpName = grpRec.Group.GroupName;
+                        <div class="group-card" data-group="@grpName" data-date="@grpRec.Date.ToString("yyyy-MM-dd")">
+                            @if (showRemoveButton)
+                            {
+                                <span class="remove-day" title="Удалить">×</span>
+                            }
+
+                            <h3 class="group-title">Группа @grpName</h3>
+                            <div class="classes-list">
+                                @{
+                                    int number = 1;
+                                }
+                                @foreach (var cls in grpRec.SingleRecords)
+                                {
+                                    <div class="class-item">
+                                        <div class="class-main">
+                                            <span class="time">№@number</span>
+                                            <span class="subject">@cls.Discipline.DisciplineCode</span>
+                                            <span class="separator">|</span>
+                                            <span class="place">@cls.Place.PlaceName</span>
+                                        </div>
+                                        <div class="class-teacher">@cls.Teacher.Name</div>
+                                    </div>
+                                    number++;
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -1,5 +1,4 @@
 ﻿const editBtn = document.getElementById('editBtn');
-const saveBtn = document.getElementById('saveBtn');
 const addBtn = document.getElementById('addBtn');
 const dayFilter = document.getElementById('dayFilter');
 const groupFilter = document.getElementById('groupFilter');
@@ -52,10 +51,10 @@ groupFilter.addEventListener('change', applyFilters);
 window.addEventListener('load', applyFilters);
 
 editBtn.addEventListener('click', () => {
-    document.body.classList.add('edit-mode');
-    saveBtn.style.display = 'inline-block';
-    editBtn.style.display = 'none';
+    const isEditMode = document.body.classList.toggle('edit-mode');
+    editBtn.textContent = isEditMode ? 'Выйти из редактирования' : 'Редактировать';
 });
+
 
 const lessonDateInput = document.getElementById('lessonDate');
 const dayOfWeekDisplay = document.getElementById('dayOfWeekDisplay');
@@ -90,63 +89,102 @@ addBtn.addEventListener('click', () => {
 });
 
 document.querySelectorAll('.remove-day').forEach(span => {
-    span.addEventListener('click', () => {
+    span.addEventListener('click', async () => {
         const card = span.closest('.group-card');
         const group = card.dataset.group;
+        const date = card.dataset.date;
         const day = card.closest('.day-section').dataset.day;
-        console.log(`Удалить расписание группы ${group} на день ${day}`);
-    });
-});
 
-saveBtn.addEventListener('click', async () => {
-    const updateData = [];
+        const confirmDelete = confirm(`Вы уверены, что хотите удалить расписание группы "${group}" на день "${day}" (${date})?`);
+        if (!confirmDelete) return;
 
-    document.querySelectorAll('.group-card').forEach(card => {
-        const group = card.dataset.group;
-        const day = card.dataset.day;
+        const payload = { group, day, date };
 
-        const lessons = [];
-        card.querySelectorAll('.lesson-item').forEach(item => {
-            lessons.push({
-                Number: item.dataset.number,
-                DisciplineCode: item.querySelector('.discipline').textContent,
-                PlaceName: item.querySelector('.auditory').textContent,
-                TeacherName: item.querySelector('.teacher').textContent
+        try {
+            const response = await fetch('/RaspisAdmin/DeleteDay', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify(payload)
             });
-        });
 
-        updateData.push({
-            GroupName: group,
-            DayOfWeek: day,
-            Lessons: lessons
-        });
-    });
-
-    try {
-        const resp = await fetch('@Url.Action("SaveSchedule", "RaspisAdmin")', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updateData)
-        });
-
-        if (resp.ok) {
-            alert('Расписание успешно сохранено!');
-            document.body.classList.remove('edit-mode');
-            saveBtn.style.display = 'none';
-            editBtn.style.display = 'inline-block';
-        } else {
-            alert('Ошибка при сохранении');
+            if (response.ok) {
+                console.log('Удаление прошло успешно');
+                card.remove();
+            } else {
+                const err = await response.text();
+                console.error('Ошибка при удалении:', err);
+            }
+        } catch (error) {
+            console.error('Ошибка сети:', error);
         }
-    } catch (err) {
-        console.error(err);
-        alert('Сетевая ошибка');
-    }
+    });
 });
+
 
 addBtn.addEventListener('click', () => addDialog.showModal());
 cancelAdd.addEventListener('click', () => addDialog.close());
 
+addForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(addForm);
+    const dto = {
+        Date: formData.get('Date'),
+        GroupName: formData.get('GroupName'),
+        DayOfWeek: formData.get('DayOfWeek'),
+        Lessons: []
+    };
+
+    const rows = lessonsContainer.querySelectorAll('.lesson-row');
+    rows.forEach(row => {
+        dto.Lessons.push({
+            Number: row.querySelector('input[name*=".Number"]').value,
+            DisciplineCode: row.querySelector('input[name*=".DisciplineCode"]').value,
+            PlaceName: row.querySelector('input[name*=".PlaceName"]').value,
+            TeacherName: row.querySelector('input[name*=".TeacherName"]').value
+        });
+    });
+
+    try {
+        const response = await fetch(addForm.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+            },
+            body: JSON.stringify(dto)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert("Расписание успешно добавлено.");
+            location.reload();
+        } else {
+            if (confirm(result.message + " Добавить всё равно?")) {
+                await fetch(addForm.action + '?force=true', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                    },
+                    body: JSON.stringify(dto)
+                });
+                location.reload();
+            }
+        }
+
+    } catch (error) {
+        alert("Произошла ошибка при добавлении расписания.");
+        console.error(error);
+    }
+});
+
+
 let lessonIndex = 1; 
+
 addLessonRowBtn.addEventListener('click', function () {
     const rows = lessonsContainer.querySelectorAll('.lesson-row');
     if (rows.length >= 10) {
@@ -192,52 +230,5 @@ document.querySelector('.lesson-row .delete-row-btn')?.addEventListener('click',
         renumberRows();
     } else {
         alert('Должна остаться хотя бы одна пара!');
-    }
-});
-
-// AJAX-submit всего дня расписания
-addForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    const formData = new FormData(addForm);
-    const dayOfWeek = formData.get('DayOfWeek');
-    const groupName = formData.get('GroupName');
-    const DateValue = formData.get('Date');
-    /*alert(DateValue);*/
-
-    const lessons = [];
-    const lessonRows = lessonsContainer.querySelectorAll('.lesson-row');
-
-    lessonRows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        lessons.push({
-            Number: +inputs[0].value,
-            DisciplineCode: inputs[1].value,
-            PlaceName: inputs[2].value,
-            TeacherName: inputs[3].value
-        });
-    });
-
-    const payload = {
-        Date: DateValue,
-        DayOfWeek: dayOfWeek,
-        GroupName: groupName,
-        Lessons: lessons
-    };
-    try {
-        const resp = await fetch(addForm.action, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        const json = await resp.json();
-        if (json.success) {
-            addDialog.close();
-            window.location.reload();
-        } else {
-            alert('Ошибка при сохранении');
-        }
-    } catch (err) {
-        console.error(err);
-        alert('Сетевая ошибка');
     }
 });

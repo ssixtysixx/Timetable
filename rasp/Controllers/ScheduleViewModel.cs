@@ -1,4 +1,4 @@
-﻿namespace rasp.Controllers;
+﻿namespace Rasp.Controllers;
 
 using Timetable.Framework.Records;
 
@@ -12,13 +12,4 @@ public class ScheduleViewModel
 
 }
 
-public class DateWithName
-{
-    public string RuName { get; set; }
-
-    public DateWithName(string RawDateTime)
-    {
-        RuName = ScheduleDayConverter.GetRussianDayOfWeek(RawDateTime);
-    }
-}
 

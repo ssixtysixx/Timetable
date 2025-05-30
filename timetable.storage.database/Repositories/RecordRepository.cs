@@ -2,8 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using rasp.Controllers;
-
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -19,6 +17,17 @@ namespace Timetable.Storage.Framework;
 public sealed class RecordRepository(IContextFactory contextFactory) : IRecordMutationRepository
 {
     private IContextFactory _contextFactory = contextFactory;
+
+    public async Task<bool> ExistsScheduleForGroupOnDate(DayScheduleDto dayScheduleDto)
+    {
+        using var context = _contextFactory.CreateContext();
+
+        return await context.TimetableRecords
+            .Include(r => r.Group)
+            .AnyAsync(r => r.Group.GroupName == dayScheduleDto.GroupName && r.TimeStamp.Date == dayScheduleDto.Date.Date);
+    }
+
+
 
     public async Task<bool> AddNewGroupRecord(DayScheduleDto dayScheduleDto)
     {

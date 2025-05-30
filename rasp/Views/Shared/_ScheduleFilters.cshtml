@@ -1,0 +1,24 @@
+﻿@model Rasp.Controllers.ScheduleViewModel
+
+<div class="filters">
+    <div class="filter">
+        <label for="dayFilter">День недели:</label>
+        <select id="dayFilter">
+            <option value="all">Все</option>
+            @foreach (var day in Model.Days)
+            {
+                <option value="@day">@day</option>
+            }
+        </select>
+    </div>
+    <div class="filter">
+        <label for="groupFilter">Группа:</label>
+        <select id="groupFilter">
+            <option value="all">Все</option>
+            @foreach (var grp in Model.Groups)
+            {
+                <option value="@grp">@grp</option>
+            }
+        </select>
+    </div>
+</div>

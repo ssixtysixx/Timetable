@@ -1,4 +1,4 @@
-﻿@model rasp.Controllers.ScheduleViewModel 
+﻿@model Rasp.Controllers.ScheduleViewModel 
 @using System.Globalization
 
 <!DOCTYPE html>
@@ -12,72 +12,20 @@
 <body>
     <div class="controls">
         <button id="editBtn">Редактировать</button>
-        <button id="saveBtn">Сохранить</button>
         <button id="addBtn">Добавить</button>
     </div>
 
     <h1 class="page-title">Расписание занятий</h1>
 
-    <div class="filters">
-        <div class="filter">
-            <label for="dayFilter">День недели:</label>
-            <select id="dayFilter">
-                <option value="all">Все</option>
-                @foreach (var day in Model.Days)
-                {
-                    <option value="@day">@day</option>
-                }
-            </select>
-        </div>
-        <div class="filter">
-            <label for="groupFilter">Группа:</label>
-            <select id="groupFilter">
-                <option value="all">Все</option>
-                @foreach (var grp in Model.Groups)
-                {
-                    <option value="@grp">@grp</option>
-                }
-            </select>
-        </div>
-    </div>
+    @await Html.PartialAsync("_ScheduleFilters", Model)
 
-    <div id="scheduleContainer">
-        @foreach (var day in Model.Days)
-        {
-            <div class="day-section" data-day="@day">
-                <h2 class="day-title">@day @Model.Data[day].FirstOrDefault().Date.ToShortDateString()</h2>
-                <div class="grid-container">
-                    @foreach (var grpRec in Model.Data[day])
-                    {
-                        var grpName = grpRec.Group.GroupName;
-                        <div class="group-card" data-group="@grpName">
-                            <span class="remove-day" title="Удалить">×</span>
 
-                            <h3 class="group-title">Группа @grpName</h3>
-                            <div class="classes-list">
-                                @{
-                                    int number = 1;
-                                }
-                                @foreach (var cls in grpRec.SingleRecords)
-                                {
-                                    <div class="class-item">
-                                        <div class="class-main">
-                                            <span class="time">№@number</span>
-                                            <span class="subject">@cls.Discipline.DisciplineCode</span>
-                                            <span class="separator">|</span>
-                                            <span class="place">@cls.Place.PlaceName</span>
-                                        </div>
-                                        <div class="class-teacher">@cls.Teacher.Name</div>
-                                    </div>
-                                    number++;
-                                }
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        }
-    </div>
+    @{
+        ViewBag.ShowRemoveButton = true;
+    }
+    @await Html.PartialAsync("_SchedulePartial", Model)
+
+
 
 
     <dialog id="addDialog">
@@ -96,9 +44,7 @@
                     }
                 </select>
 
-                <!-- Контейнер для строк с парами -->
                 <div id="lessonsContainer">
-                    <!-- Первая строка пар по умолчанию -->
                     <div class="lesson-row">
                         <div>
                             <label>№ пары</label>

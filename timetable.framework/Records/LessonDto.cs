@@ -1,4 +1,4 @@
-﻿namespace rasp.Controllers;
+﻿namespace Timetable.Framework.Records;
 
 public class LessonDto
 {

@@ -1,32 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+
+using System.Linq.Expressions;
+using System.Security.Claims;
+
 using Timetable.Framework;
 using Timetable.Framework.Records;
-using System.Text.RegularExpressions;
-using System.Linq.Expressions;
-using Timetable.Storage.Framework.Repositories;
 using Timetable.Storage.Database.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using System.Globalization;
-using Timetable.Storage.Framework;
+using Timetable.Storage.Framework.Repositories;
 
-namespace rasp.Controllers;
+namespace Rasp.Controllers;
 
 public class RaspisController : Controller
 {
-    private readonly IDisciplineRepository _Disciplinerepository;
-    private readonly IGroupRepository _grouprepository;
-    private readonly IPlaceRepository _Placerepository;
-    private readonly IRecordRepository _Recordrepository;
-    private readonly ITeacherRepository _Teacherrepository;
+
     private readonly IUserRepository _userRepository;
 
-    //TODO:
-    public List<GroupDayRecord> Records { get; set; }
-    public IRecordMutationRepository _recordMutationRepository { get; }
+    private readonly IRecordMutationRepository _recordMutationRepository;
 
     public RaspisController(
         IUserRepository userRepository,
@@ -66,12 +57,12 @@ public class RaspisController : Controller
                 list[ScheduleDayConverter.GetRussianDayOfWeek(DateTime.Now.AddDays(i).ToString("yyyy-MM-dd"))] = (value);
             }
         }
+
         var groups = await _recordMutationRepository.GetAllGroupsNames();
 
         var vm = new ScheduleViewModel
         {
             Days = [.. ScheduleDayConverter.DaysOfWeek],
-
             Groups = groups,
             Data = list
         };

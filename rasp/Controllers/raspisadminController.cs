@@ -1,4 +1,4 @@
-﻿namespace rasp.Controllers;
+﻿namespace Rasp.Controllers;
 
 using System;
 using System.Collections.Generic;
@@ -9,11 +9,16 @@ using Microsoft.AspNetCore.Mvc;
 using Timetable.Framework;
 using Timetable.Framework.Records;
 using Timetable.Storage.Framework;
+using Timetable.Storage.Framework.Repositories;
+
+using static Timetable.Framework.RaspisAdminController;
 
 [Authorize]
-public class RaspisAdminController(IRecordMutationRepository recordrepository) : Controller
+public partial class RaspisAdminController(IRecordMutationRepository recordrepository,
+    IDayRepository dayRepository) : Controller
 {
     private readonly IRecordMutationRepository _recordrepository = recordrepository;
+    private readonly IDayRepository _dayRepository = dayRepository;
 
     public async Task<IActionResult> Index()
     {
@@ -50,9 +55,24 @@ public class RaspisAdminController(IRecordMutationRepository recordrepository) :
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddDaySchedule([FromBody] DayScheduleDto dto)
+    public IActionResult DeleteDay([FromBody] DeleteDayRequest request)
     {
+        _dayRepository.DeleteRecord(request);
+        return Ok();
+    }
+
+
+    public async Task<IActionResult> AddDaySchedule([FromBody] DayScheduleDto dto,[FromQuery] bool force = false)
+    {
+        bool exists = await _recordrepository.ExistsScheduleForGroupOnDate(dto);
+
+        if (exists && !force)
+        {
+            return Json(new { success = false, message = "Расписание для этой группы на выбранную дату уже существует." });
+        }
+
         await _recordrepository.AddNewGroupRecord(dto);
         return Json(new { success = true });
     }
+
 }
