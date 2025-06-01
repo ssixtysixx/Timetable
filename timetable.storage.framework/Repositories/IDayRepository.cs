@@ -1,4 +1,4 @@
-﻿using static Timetable.Framework.RaspisAdminController;
+﻿using Timetable.Framework;
 
 namespace Timetable.Storage.Framework.Repositories;
 

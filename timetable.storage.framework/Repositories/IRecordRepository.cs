@@ -9,11 +9,13 @@ public interface IRecordRepository
 
 public interface IRecordMutationRepository : IRecordRepository
 {
-    Task<List<GroupByDayRecords>> GiveMeRecordForAllGroups(DateTime date, CancellationToken cancellationToken);
+	Task<List<GroupByDayRecords>> GiveMeRecordForAllGroups(DateTime date, CancellationToken cancellationToken);
 
-    Task<List<string>> GetAllGroupsNames();
+	Task<List<string>> GetAllGroupsNames();
 
-    Task<bool> AddNewGroupRecord(DayScheduleDto dayScheduleDto);
+	Task<bool> AddGroupIfNotExistAsync(string groupName);
 
-    Task<bool> ExistsScheduleForGroupOnDate(DayScheduleDto dayScheduleDto);
+	Task<bool> AddNewGroupRecord(DayScheduleDto dayScheduleDto);
+
+	Task<bool> ExistsScheduleForGroupOnDate(DayScheduleDto dayScheduleDto);
 }

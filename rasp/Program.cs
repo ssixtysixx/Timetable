@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+п»їusing Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 using Rasp;
-
-using System.Threading.Tasks;
 
 using TechTeaStudio.Config;
 
@@ -28,16 +26,16 @@ internal class Program
                 options.AccessDeniedPath = "/raspis";
             });
 
-        //Где там моя базированная конфигурация
+        //Р“РґРµ С‚Р°Рј РјРѕСЏ Р±Р°Р·РёСЂРѕРІР°РЅРЅР°СЏ РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ
         var configHandler = new ConfigFileHandler<AppConfig>(
         directoryPath: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CGU"),
         fileName: "CoolestConfigForCGURaspisanieSite",
         fileExtension: "json",
         defaultConfig: new AppConfig(
-                connectionStringId: "Никита",
+                connectionStringId: "РќРёРєРёС‚Р°",
                 connectionStrings:
                 [
-                    new("Никита", "Server=(localdb)\\MSSQLLocalDB;Database=TestAppDatabase;Trusted_Connection=False"),
+                    new("РќРёРєРёС‚Р°", "Server=(localdb)\\MSSQLLocalDB;Database=TestAppDatabase;Trusted_Connection=False"),
                     new("CEO", @"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = NikitaBase; Integrated Security = True; Connect Timeout = 30; Encrypt = False; Trust Server Certificate = True; Application Intent = ReadWrite; Multi Subnet Failover = False"),
                 ]
         ),
@@ -72,7 +70,11 @@ internal class Program
         var services = app.Services.CreateScope();
         var context = services.ServiceProvider.GetRequiredService<TimetableDBContext>();
         var repository = services.ServiceProvider.GetRequiredService<RecordRepository>();
-        //await repository.SeedTestData();
+
+        await repository.AddGroupIfNotExistAsync(@"РРЎ-41");
+        await repository.AddGroupIfNotExistAsync(@"РРЎ-42");
+        await repository.AddGroupIfNotExistAsync(@"РРЎ-31");
+        await repository.AddGroupIfNotExistAsync(@"РРЎ-32");
         context.InitAdminUser();
 
         // Configure the HTTP request pipeline.

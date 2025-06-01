@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using Timetable.Framework;
-using Timetable.Framework.Records;
 using Timetable.Storage.Framework.Repositories;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Timetable.Storage.Database.Repositories;
 
@@ -10,7 +9,7 @@ public sealed class DayRepository(IContextFactory contextFactory) : IDayReposito
 {
     private IContextFactory _contextFactory = contextFactory;
 
-    public async Task<bool> DeleteRecord(RaspisAdminController.DeleteDayRequest deleteDayRequest)
+    public async Task<bool> DeleteRecord(DeleteDayRequest deleteDayRequest)
     {
         try
         {

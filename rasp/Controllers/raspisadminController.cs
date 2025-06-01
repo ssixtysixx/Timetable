@@ -1,17 +1,14 @@
 ﻿namespace Rasp.Controllers;
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using System;
+using System.Collections.Generic;
+
 using Timetable.Framework;
 using Timetable.Framework.Records;
-using Timetable.Storage.Framework;
 using Timetable.Storage.Framework.Repositories;
-
-using static Timetable.Framework.RaspisAdminController;
 
 [Authorize]
 public partial class RaspisAdminController(IRecordMutationRepository recordrepository,
@@ -20,6 +17,7 @@ public partial class RaspisAdminController(IRecordMutationRepository recordrepos
     private readonly IRecordMutationRepository _recordrepository = recordrepository;
     private readonly IDayRepository _dayRepository = dayRepository;
 
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         Dictionary<string, List<GroupByDayRecords>> list = [];

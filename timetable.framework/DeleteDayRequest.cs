@@ -2,14 +2,13 @@
 
 using System;
 
-public partial class RaspisAdminController
+
+public class DeleteDayRequest
 {
-    public class DeleteDayRequest
-    {
-        public string Group { get; set; }
+    public string Group { get; set; }
 
-        public string Day { get; set; }
+    public string Day { get; set; }
 
-        public DateTime Date { get; set; }
-    }
+    public DateTime Date { get; set; }
 }
+

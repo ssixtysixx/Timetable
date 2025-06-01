@@ -271,5 +271,25 @@ public sealed class RecordRepository(IContextFactory contextFactory) : IRecordMu
     ];
     }
 
+    public async Task<bool> AddGroupIfNotExistAsync(string groupName)
+    {
+        using var context = _contextFactory.CreateContext();
 
+        GroupEntity group = await context.GroupsEntity
+            .FirstOrDefaultAsync(g => g.GroupName == groupName);
+
+        if (group == null)
+        {
+            group = new GroupEntity
+            {
+                GroupName = groupName,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+            };
+            context.GroupsEntity.Add(group);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
 }
